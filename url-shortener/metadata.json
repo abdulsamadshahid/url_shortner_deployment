@@ -1,0 +1,6 @@
+{
+  "name": "URL Shortener",
+  "description": "A production-style, beginner-friendly URL shortener web application with React frontend and Express backend API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

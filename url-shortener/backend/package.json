@@ -1,0 +1,14 @@
+{
+  "name": "url-shortener-backend",
+  "version": "1.0.0",
+  "description": "Backend API for URL Shortener using Node.js and Express",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
