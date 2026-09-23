@@ -1,1 +1,67 @@
-..
+name: url_shortner_app
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          role-to-assume: arn:aws:iam::058835008914:role/github_actions_ecr_permission
+          aws-region: ap-south-1
+
+      - name: Check AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and Push Docker Images
+        run: |
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 058835008914.dkr.ecr.ap-south-1.amazonaws.com
+
+          docker build -f ./url_shortener/frontend/Dockerfile -t my-url-app_frontend ./frontend
+
+          docker tag my-url-app_frontend:latest 058835008914.dkr.ecr.ap-south-1.amazonaws.com/frontend_repo:latest
+
+          docker push 058835008914.dkr.ecr.ap-south-1.amazonaws.com/frontend_repo:latest
+
+          docker build -f ./backend/Dockerfile -t my-url-app_backend ./url_shortener/backend
+
+          docker tag my-url-app_backend:latest 058835008914.dkr.ecr.ap-south-1.amazonaws.com/backend_repo:latest
+
+          docker push 058835008914.dkr.ecr.ap-south-1.amazonaws.com/backend_repo:latest
+
+      - name: Prepare SSH key
+        run: |
+          echo "${{ secrets.id_rsa }}" > id_rsa
+          chmod 600 id_rsa
+
+      - name: Copy deployment files
+        run: |
+          scp -o StrictHostKeyChecking=no -i id_rsa ./url_shortener/docker-compose.yml ubuntu@13.207.176.151:/home/ubuntu/
+
+      - name: Deploy on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i id_rsa ubuntu@13.207.176.151 << 'EOF'
+          docker stop $(docker ps -q)
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 058835008914.dkr.ecr.ap-south-1.amazonaws.com
+
+          docker compose pull
+          docker compose up -d
+
+          EOF
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f id_rsa
