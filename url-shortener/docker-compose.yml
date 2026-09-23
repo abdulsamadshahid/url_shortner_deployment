@@ -2,12 +2,12 @@ services:
   # 1. Backend API Service (Node.js & Express)
   backend:
     build:
-      context: ./url-shortener/backend
+      context: 058835008914.dkr.ecr.ap-south-1.amazonaws.com/backend_repo:latest
       dockerfile: Dockerfile
     container_name: url-shortener-backend
     environment:
       - PORT=5000
-      - BASE_URL=http://localhost:3000
+      - BASE_URL=http://13.232.205.135:3000
     ports:
       - "5000:5000"
     healthcheck:
@@ -23,7 +23,7 @@ services:
   # 2. Frontend Web Service (React, Vite, Nginx)
   frontend:
     build:
-      context: ./url-shortener/frontend
+      context: 058835008914.dkr.ecr.ap-south-1.amazonaws.com/frontend_repo:latest
       dockerfile: Dockerfile
     container_name: url-shortener-frontend
     ports:
