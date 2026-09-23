@@ -2,7 +2,7 @@ services:
   # 1. Backend API Service (Node.js & Express)
   backend:
     build:
-      context: ./backend
+      context: ./url-shortener/backend
       dockerfile: Dockerfile
     container_name: url-shortener-backend
     environment:
@@ -23,7 +23,7 @@ services:
   # 2. Frontend Web Service (React, Vite, Nginx)
   frontend:
     build:
-      context: ./frontend
+      context: ./url-shortener/frontend
       dockerfile: Dockerfile
     container_name: url-shortener-frontend
     ports:
