@@ -30,13 +30,13 @@ jobs:
         run: |
           aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 058835008914.dkr.ecr.ap-south-1.amazonaws.com
 
-          docker build -f ./url_shortener/frontend/Dockerfile -t my-url-app_frontend ./url_shortener/frontend
+          docker build -f ./url-shortener/frontend/Dockerfile -t my-url-app_frontend ./url-shortener/frontend
 
           docker tag my-url-app_frontend:latest 058835008914.dkr.ecr.ap-south-1.amazonaws.com/frontend_repo:latest
 
           docker push 058835008914.dkr.ecr.ap-south-1.amazonaws.com/frontend_repo:latest
 
-          docker build -f ./url_shortener/backend/Dockerfile -t my-url-app_backend ./url_shortener/backend
+          docker build -f ./url-shortener/backend/Dockerfile -t my-url-app_backend ./url-shortener/backend
 
           docker tag my-url-app_backend:latest 058835008914.dkr.ecr.ap-south-1.amazonaws.com/backend_repo:latest
 
@@ -49,7 +49,7 @@ jobs:
 
       - name: Copy deployment files
         run: |
-          scp -o StrictHostKeyChecking=no -i id_rsa ./url_shortener/docker-compose.yml ubuntu@13.232.205.135:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i id_rsa ./url-shortener/docker-compose.yml ubuntu@13.232.205.135:/home/ubuntu/
 
       - name: Deploy on EC2
         run: |
